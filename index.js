@@ -29,6 +29,7 @@ const client = new MongoClient(uri, {
   async function run() {
     try {
         const UsersCollection = client.db("AssetFlow").collection("users")
+        const AssetsCollection = client.db("AssetFlow").collection("Assets")
     
         app.get("/users", async (req, res) => {
             const result = await UsersCollection.find().toArray()
@@ -41,8 +42,26 @@ const client = new MongoClient(uri, {
             res.send(result)
           })
         
-
+        //Update employee Affiliate
+        app.put('/users/:id', async(req, res) => {
+          const id = req.params.id;
+          const filter = {_id: new ObjectId(id)}
+          const options = { upsert: true};
+          const updatedItem = req.body;
+          const SingleItem = {
+            $set: {
+              affiliateWith: updatedItem.affiliateWith
+            }
+          }
+          const result = await UsersCollection.updateOne(filter, SingleItem, options);
+          res.send(result)
+        })
         
+        //Asset Section
+        app.get("/assets", async (req, res) => {
+          const result = await UsersCollection.find().toArray()
+          res.send("assets")
+      })
 
         
 
