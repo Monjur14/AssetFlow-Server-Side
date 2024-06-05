@@ -58,10 +58,40 @@ const client = new MongoClient(uri, {
         })
         
         //Asset Section
+        app.post("/assets", async (req, res) => {
+          const newAsset = req.body
+          const result = await AssetsCollection.insertOne(newAsset)
+          res.send(result)
+        })
         app.get("/assets", async (req, res) => {
-          const result = await UsersCollection.find().toArray()
-          res.send("assets")
-      })
+          const result = await AssetsCollection.find().toArray()
+          res.send(result)
+        })
+        app.delete("/assets/:id", async(req, res) => {
+          const id = req.params.id;
+          const query = { _id: new ObjectId(id)}
+          const result = await AssetsCollection.deleteOne(query)
+          res.send(result)
+        })
+        app.put('/assets/:id', async(req, res) => {
+          const id = req.params.id;
+          const filter = {_id: new ObjectId(id)}
+          const options = { upsert: true};
+          const updatedAsset = req.body;
+          const SingleItem = {
+            $set: {
+              postedBy: updatedAsset.postedBy,
+              addedDate: updatedAsset.addedDate,
+              productName: updatedAsset.productName,
+              productImage: updatedAsset.productImage,
+              productQuantity: updatedAsset.productQuantity,
+              productType: updatedAsset.productType,
+              availibility: updatedAsset.availibility,
+            }
+          }
+          const result = await AssetsCollection.updateOne(filter, SingleItem, options);
+          res.send(result)
+        })
 
         
 
