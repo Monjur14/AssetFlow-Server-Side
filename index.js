@@ -30,6 +30,7 @@ const client = new MongoClient(uri, {
     try {
         const UsersCollection = client.db("AssetFlow").collection("users")
         const AssetsCollection = client.db("AssetFlow").collection("Assets")
+        const RequestCollection = client.db("AssetFlow").collection("requests")
     
         app.get("/users", async (req, res) => {
             const result = await UsersCollection.find().toArray()
@@ -93,6 +94,11 @@ const client = new MongoClient(uri, {
           res.send(result)
         })
 
+        //Request Section
+        app.get("/requests", async (req, res) => {
+          const result = await RequestCollection.find().toArray()
+          res.send(result)
+        })
         
 
 
