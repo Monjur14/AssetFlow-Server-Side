@@ -8,7 +8,7 @@ const PORT = process.env.PORT || 5000
 const app = express()
 
 const corsOption = {
-    origin: ["http://localhost:5173", "https://assignment-11-3a7d3.web.app"],
+    origin: ["http://localhost:5173",],
     credentials: true,
     optionSuccessStatus: 200,
 }
@@ -94,9 +94,74 @@ const client = new MongoClient(uri, {
           res.send(result)
         })
 
+        app.put('/assets/decrement/:id', async(req, res) => {
+          const id = req.params.id;
+          try {
+              const result = await AssetsCollection.updateOne(
+                  { _id: new ObjectId(id) },
+                  { $inc: { productQuantity: -1 } }  // Corrected to decrement
+              );
+
+              if (result.modifiedCount > 0) {
+                  res.json({ modifiedCount: result.modifiedCount });
+              } else {
+                  res.json({ modifiedCount: 0 });
+              }
+          } catch (error) {
+              console.error("Error updating Asset:", error);
+              res.status(500).json({ error: "Internal Server Error" });
+          }
+      });
+        app.put('/assets/increment/:id', async(req, res) => {
+          const id = req.params.id;
+          try {
+              const result = await AssetsCollection.updateOne(
+                  { _id: new ObjectId(id) },
+                  { $inc: { productQuantity: 1 } } 
+              );
+
+              if (result.modifiedCount > 0) {
+                  res.json({ modifiedCount: result.modifiedCount });
+              } else {
+                  res.json({ modifiedCount: 0 });
+              }
+          } catch (error) {
+              console.error("Error updating Asset:", error);
+              res.status(500).json({ error: "Internal Server Error" });
+          }
+      });
+       
+
+
+
         //Request Section
         app.get("/requests", async (req, res) => {
           const result = await RequestCollection.find().toArray()
+          res.send(result)
+        })
+        app.post("/requests", async (req, res) => {
+          const newRequest = req.body
+          const result = await RequestCollection.insertOne(newRequest)
+          res.send(result)
+        })
+        app.delete("/requests/:id", async(req, res) => {
+          const id = req.params.id;
+          const query = { _id: new ObjectId(id)}
+          const result = await RequestCollection.deleteOne(query)
+          res.send(result)
+        })
+        app.put('/requests/:id', async(req, res) => {
+          const id = req.params.id;
+          const filter = {_id: new ObjectId(id)}
+          const options = { upsert: true};
+          const updatedRequest = req.body;
+          const SingleItem = {
+            $set: {
+              status: updatedRequest.status,
+              approvalDate: updatedRequest.approvalDate
+            }
+          }
+          const result = await RequestCollection.updateOne(filter, SingleItem, options);
           res.send(result)
         })
         
