@@ -12,7 +12,7 @@ const corsOption = {
     origin: ["http://localhost:5173", "https://assetflow-14.web.app"],
     credentials: true,
     optionSuccessStatus: 200,
-};
+};         
 app.use(cors(corsOption));
 app.use(cors());
 app.use(express.json());
