@@ -9,7 +9,7 @@ const PORT = process.env.PORT || 5000;
 const app = express();
 
 const corsOption = {
-    origin: ["http://localhost:5173", "https://assetflow-14.web.app"],
+    origin: ["http://localhost:5173", "https://assetflow-14.web.app", "https://assetflow-14.netlify.app"],
     credentials: true,
     optionSuccessStatus: 200,
 };         
